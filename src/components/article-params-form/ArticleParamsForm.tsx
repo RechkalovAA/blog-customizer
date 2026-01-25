@@ -1,14 +1,142 @@
+import { useEffect, useRef, useCallback } from 'react';
+import clsx from 'clsx';
 import { ArrowButton } from 'src/ui/arrow-button';
 import { Button } from 'src/ui/button';
+import { Select } from 'src/ui/select';
+import { RadioGroup } from 'src/ui/radio-group';
+import { Separator } from 'src/ui/separator';
+import { Text } from 'src/ui/text';
+import {
+	fontFamilyOptions,
+	fontSizeOptions,
+	fontColors,
+	backgroundColors,
+	contentWidthArr,
+	ArticleStateType,
+	OptionType,
+} from 'src/constants/articleProps';
 
 import styles from './ArticleParamsForm.module.scss';
 
-export const ArticleParamsForm = () => {
+type ArticleParamsFormProps = {
+	isOpen: boolean;
+	onToggle: () => void;
+	formState: ArticleStateType;
+	handlers: {
+		onFontFamilyChange: (option: OptionType) => void;
+		onFontSizeChange: (option: OptionType) => void;
+		onFontColorChange: (option: OptionType) => void;
+		onBackgroundColorChange: (option: OptionType) => void;
+		onContentWidthChange: (option: OptionType) => void;
+	};
+	onApply: () => void;
+	onReset: () => void;
+};
+
+export const ArticleParamsForm = ({
+	isOpen,
+	onToggle,
+	formState,
+	handlers,
+	onApply,
+	onReset,
+}: ArticleParamsFormProps) => {
+	const sidebarRef = useRef<HTMLElement>(null);
+
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (
+				sidebarRef.current &&
+				!sidebarRef.current.contains(event.target as Node) &&
+				isOpen
+			) {
+				onToggle();
+			}
+		};
+
+		if (isOpen) {
+			document.addEventListener('mousedown', handleClickOutside);
+		}
+
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside);
+		};
+	}, [isOpen, onToggle]);
+
+	const handleSubmit = useCallback(
+		(e: React.FormEvent) => {
+			e.preventDefault();
+			onApply();
+		},
+		[onApply]
+	);
+
+	const handleResetForm = useCallback(
+		(e: React.FormEvent) => {
+			e.preventDefault();
+			onReset();
+		},
+		[onReset]
+	);
+
 	return (
 		<>
-			<ArrowButton isOpen={false} onClick={() => {}} />
-			<aside className={styles.container}>
-				<form className={styles.form}>
+			<ArrowButton isOpen={isOpen} onClick={onToggle} />
+			<aside
+				ref={sidebarRef}
+				className={clsx(styles.container, { [styles.container_open]: isOpen })}>
+				<form
+					className={styles.form}
+					onSubmit={handleSubmit}
+					onReset={handleResetForm}>
+					{/* Заголовок */}
+					<Text as='h1' size={31} weight={800} uppercase>
+						ЗАДАЙТЕ ПАРАМЕТРЫ
+					</Text>
+
+					{/* Шрифт */}
+					<Select
+						title='Шрифт'
+						selected={formState.fontFamilyOption}
+						options={fontFamilyOptions}
+						onChange={handlers.onFontFamilyChange}
+					/>
+
+					{/* Размер шрифта */}
+					<RadioGroup
+						title='Размер шрифта'
+						name='fontSize'
+						selected={formState.fontSizeOption}
+						options={fontSizeOptions}
+						onChange={handlers.onFontSizeChange}
+					/>
+
+					{/* Цвет текста */}
+					<Select
+						title='Цвет текста'
+						selected={formState.fontColor}
+						options={fontColors}
+						onChange={handlers.onFontColorChange}
+					/>
+
+					<Separator />
+
+					{/* Цвет фона */}
+					<Select
+						title='Цвет фона'
+						selected={formState.backgroundColor}
+						options={backgroundColors}
+						onChange={handlers.onBackgroundColorChange}
+					/>
+
+					{/* Ширина контента */}
+					<Select
+						title='Ширина контента'
+						selected={formState.contentWidth}
+						options={contentWidthArr}
+						onChange={handlers.onContentWidthChange}
+					/>
+
 					<div className={styles.bottomContainer}>
 						<Button title='Сбросить' htmlType='reset' type='clear' />
 						<Button title='Применить' htmlType='submit' type='apply' />

@@ -6,7 +6,7 @@
 	row-gap: 24px;
 	max-width: var(--container-width, auto);
 	margin: 0 auto;
-	padding: 72px 0 144px;
+	padding: 90px 0 144px;
 }
 
 .titleDescription {
@@ -14,7 +14,20 @@
 }
 
 .image {
-	width: 100%;
-	height: auto;
+	width: var(--image-width, 1600px);
+	height: 1000px;
+	object-fit: cover;
+	display: block;
 	margin-top: 26px;
+	/* 
+	 * В широком режиме (--container-width: 1394px):
+	 * --image-width: 1600px, изображение выходит за пределы контейнера
+	 * margin-left/right центрируют изображение 1600px относительно viewport
+	 * 
+	 * В узком режиме (--container-width: 948px):
+	 * --image-width: 948px, изображение ограничено контейнером
+	 * margin-left/right центрируют изображение 948px относительно viewport
+	 */
+	margin-left: calc(50vw - calc(var(--image-width, 1600px) / 2));
+	margin-right: calc(50vw - calc(var(--image-width, 1600px) / 2));
 }
