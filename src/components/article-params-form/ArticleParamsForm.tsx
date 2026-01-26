@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
 import clsx from 'clsx';
 import { ArrowButton } from 'src/ui/arrow-button';
 import { Button } from 'src/ui/button';
@@ -19,8 +19,6 @@ import {
 import styles from './ArticleParamsForm.module.scss';
 
 type ArticleParamsFormProps = {
-	isOpen: boolean;
-	onToggle: () => void;
 	formState: ArticleStateType;
 	handlers: {
 		onFontFamilyChange: (option: OptionType) => void;
@@ -34,13 +32,18 @@ type ArticleParamsFormProps = {
 };
 
 export const ArticleParamsForm = ({
-	isOpen,
-	onToggle,
 	formState,
 	handlers,
 	onApply,
 	onReset,
 }: ArticleParamsFormProps) => {
+	// Состояние открытия сайдбара (внутреннее состояние формы)
+	const [isOpen, setIsOpen] = useState<boolean>(false);
+
+	const handleToggle = () => {
+		setIsOpen((prev) => !prev);
+	};
+
 	const sidebarRef = useRef<HTMLElement>(null);
 
 	useEffect(() => {
@@ -50,7 +53,7 @@ export const ArticleParamsForm = ({
 				!sidebarRef.current.contains(event.target as Node) &&
 				isOpen
 			) {
-				onToggle();
+				handleToggle();
 			}
 		};
 
@@ -61,7 +64,7 @@ export const ArticleParamsForm = ({
 		return () => {
 			document.removeEventListener('mousedown', handleClickOutside);
 		};
-	}, [isOpen, onToggle]);
+	}, [isOpen]);
 
 	const handleSubmit = useCallback(
 		(e: React.FormEvent) => {
@@ -81,7 +84,7 @@ export const ArticleParamsForm = ({
 
 	return (
 		<>
-			<ArrowButton isOpen={isOpen} onClick={onToggle} />
+			<ArrowButton isOpen={isOpen} onClick={handleToggle} />
 			<aside
 				ref={sidebarRef}
 				className={clsx(styles.container, { [styles.container_open]: isOpen })}>
