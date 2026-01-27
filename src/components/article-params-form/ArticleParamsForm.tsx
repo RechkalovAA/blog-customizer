@@ -38,10 +38,10 @@ export const ArticleParamsForm = ({
 	onReset,
 }: ArticleParamsFormProps) => {
 	// Состояние открытия сайдбара (внутреннее состояние формы)
-	const [isOpen, setIsOpen] = useState<boolean>(false);
+	const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
 	const handleToggle = () => {
-		setIsOpen((prev) => !prev);
+		setIsMenuOpen((prev) => !prev);
 	};
 
 	const sidebarRef = useRef<HTMLElement>(null);
@@ -51,20 +51,20 @@ export const ArticleParamsForm = ({
 			if (
 				sidebarRef.current &&
 				!sidebarRef.current.contains(event.target as Node) &&
-				isOpen
+				isMenuOpen
 			) {
 				handleToggle();
 			}
 		};
 
-		if (isOpen) {
+		if (isMenuOpen) {
 			document.addEventListener('mousedown', handleClickOutside);
 		}
 
 		return () => {
 			document.removeEventListener('mousedown', handleClickOutside);
 		};
-	}, [isOpen]);
+	}, [isMenuOpen]);
 
 	const handleSubmit = useCallback(
 		(e: React.FormEvent) => {
@@ -84,10 +84,10 @@ export const ArticleParamsForm = ({
 
 	return (
 		<>
-			<ArrowButton isOpen={isOpen} onClick={handleToggle} />
+			<ArrowButton isOpen={isMenuOpen} onClick={handleToggle} />
 			<aside
 				ref={sidebarRef}
-				className={clsx(styles.container, { [styles.container_open]: isOpen })}>
+				className={clsx(styles.container, { [styles.container_open]: isMenuOpen })}>
 				<form
 					className={styles.form}
 					onSubmit={handleSubmit}
