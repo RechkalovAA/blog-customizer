@@ -147,16 +147,21 @@ export const backgroundColors: OptionType[] = [
 	},
 ];
 
+// Константы для ширины контента и изображения
+export const WIDE_CONTENT_WIDTH = '1394px';
+export const NARROW_CONTENT_WIDTH = '948px';
+export const WIDE_IMAGE_WIDTH = '1600px';
+
 export const contentWidthArr: OptionType[] = [
 	{
 		title: 'Широкий',
-		value: '1394px',
+		value: WIDE_CONTENT_WIDTH,
 		className: 'width-wide',
 		optionClassName: 'option-wide',
 	},
 	{
 		title: 'Узкий',
-		value: '948px',
+		value: NARROW_CONTENT_WIDTH,
 		className: 'width-narrow',
 		optionClassName: 'option-narrow',
 	},
